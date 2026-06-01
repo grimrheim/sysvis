@@ -34,7 +34,7 @@ static void set_entering(pid_t pid, int val) {
 
 static void remove_pstate(pid_t pid) {
     for (int i = 0; i < MAX_PIDS; ++i)
-    if (pstate[i].pid == pid) { pstate[i].pid = 0; return; }
+        if (pstate[i].pid == pid) { pstate[i].pid = 0; return; }
 }
 
 static void peek_string(pid_t pid, long addr, char *buf, size_t size) {
@@ -91,7 +91,7 @@ int tracer_run(const char *path, char *const argv[], event_cb cb) {
               | PTRACE_O_TRACEVFORK
               | PTRACE_O_TRACECLONE;
     ptrace(PTRACE_SETOPTIONS, root, NULL, opts);
-    ptrace(PTRACE_SYSCALL, root, NULL, NULL);   // запускаем, остановись на след. syscall
+    ptrace(PTRACE_SYSCALL, root, NULL, NULL);   // запускаем, остановку на каждом syscall
 
     while (1) {
         // -1 means we are waiting for any process

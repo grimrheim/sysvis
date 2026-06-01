@@ -141,5 +141,5 @@ void syscall_print(const SyscallEvent *ev) {
             printf("(%ld, %ld, %ld)", ev->args[0], ev->args[1], ev->args[2]);
             break;
     }
-printf(" = %ld\n", ev->retval);
+    printf(" = %ld\n", ev->retval);
 }

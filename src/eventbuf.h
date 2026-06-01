@@ -1,13 +1,13 @@
 #pragma once
+#include <pthread.h>
 #include "syscalls.h"
 
 #define EVENTBUF_SIZE 1024
 
 typedef struct {
     SyscallEvent buf[EVENTBUF_SIZE]; 
-    int head;
-    int tail;
-    int count;
+    int head, tail, count;
+    pthread_mutex_t lock;
 } EventBuf;
 
 void eventbuf_init(EventBuf *eb);
