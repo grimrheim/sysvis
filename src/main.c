@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
     pthread_t tid;
     pthread_create(&tid, NULL, tracer_thread, &ta);
 
-    gui_init(&g_events);
+    gui_run(&g_events, argv[1]);
 
     pthread_join(tid, NULL);
     return 0;

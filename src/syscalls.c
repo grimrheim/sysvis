@@ -143,3 +143,34 @@ void syscall_print(const SyscallEvent *ev) {
     }
     printf(" = %ld\n", ev->retval);
 }
+
+SyscallCategory syscall_category(long sysno) {
+    switch (sysno) {
+    case SYS_open: case SYS_openat: case SYS_read: case SYS_write:
+    case SYS_close: case SYS_stat: case SYS_fstat: case SYS_lstat:
+    case SYS_access: case SYS_creat: case SYS_unlink: case SYS_mkdir:
+    case SYS_rmdir: case SYS_rename: case SYS_readlink: case SYS_getcwd:
+    case SYS_dup: case SYS_dup2: case SYS_dup3: case SYS_pipe: case SYS_pipe2:
+    case SYS_pread64: case SYS_pwrite64: case SYS_readv: case SYS_writev:
+        return CAT_FILE;
+
+    case SYS_socket:  case SYS_connect:  case SYS_bind:    case SYS_listen:
+    case SYS_accept:  case SYS_accept4:  case SYS_sendto:  case SYS_recvfrom:
+    case SYS_setsockopt: case SYS_getsockopt:
+    case SYS_epoll_create: case SYS_epoll_create1:
+    case SYS_epoll_ctl:    case SYS_epoll_wait:
+        return CAT_NETWORK;
+
+    case SYS_fork: case SYS_vfork: case SYS_clone:
+    case SYS_execve: case SYS_exit: case SYS_exit_group:
+    case SYS_wait4: case SYS_kill: case SYS_getpid:
+    case SYS_getppid: case SYS_gettid:
+        return CAT_PROCESS;
+
+    case SYS_mmap: case SYS_munmap: case SYS_brk: case SYS_mprotect:
+        return CAT_MEMORY;
+
+    default:
+        return CAT_OTHER;
+    }
+}

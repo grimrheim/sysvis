@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <sys/ptrace.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -8,6 +9,7 @@
 #include <string.h>
 #include <errno.h>
 #include <stdio.h>
+#include <time.h>
 #include "tracer.h"
 #include "syscalls.h"
 #include "process.h"
@@ -70,6 +72,9 @@ int tracer_run(const char *path, char *const argv[], event_cb cb) {
     process_init();
 
     memset(pstate, 0, sizeof(pstate));
+
+    struct timespec t0, now;
+    clock_gettime(CLOCK_MONOTONIC, &t0);
 
     pid_t root = fork();
     if (root < 0) { perror("fork"); return -1; }
@@ -147,6 +152,11 @@ int tracer_run(const char *path, char *const argv[], event_cb cb) {
             ev.args[4]  = regs.r8;
             ev.args[5]  = regs.r9;
             ev.retval   = entering ? 0 : (long)regs.rax;
+
+            clock_gettime(CLOCK_MONOTONIC, &now);
+            ev.ts_ms = (uint64_t)(now.tv_sec  - t0.tv_sec)  * 1000
+                    + (uint64_t)(now.tv_nsec - t0.tv_nsec) / 1000000;
+            ev.category = syscall_category(ev.sysno);
 
             int idx = str_arg_index(ev.sysno);
             if (idx >= 0 && ev.args[idx])
