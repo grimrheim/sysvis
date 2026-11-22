@@ -1,5 +1,5 @@
 #include "gui.h"
-#include <ncurses.h>
+#include <ncursesw/ncurses.h>
 #include <pthread.h>
 #include <sched.h>
 #include <signal.h>
@@ -233,6 +233,7 @@ static void draw_table(WINDOW *win, int rows, int cols) {
         vis++;
         row++;
     }
+    wrefresh(win);
 }
 
 void gui_run(EventBuf *events, const char *prog_name) {
